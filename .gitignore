@@ -1,0 +1,14 @@
+*.pyc
+
+dist/
+build/
+venv/
+__pycache__/
+.idea
+
+*.egg-info/
+
+.tox/
+.coverage
+
+.idea
