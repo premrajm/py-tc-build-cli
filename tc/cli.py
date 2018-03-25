@@ -1,7 +1,7 @@
 import base64
 import click
 import os
-import utils
+import tc.utils as utils
 
 authConfig = os.environ.get('HOME') + "/.tcbuild/{0}.auth"
 
