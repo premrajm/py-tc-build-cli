@@ -18,10 +18,7 @@ def main():
 def status():
     """get the build related info from team city server"""
     try:
-        config_parser = _get_build_config_parser()
-        server = config_parser.get(build_config.main, build_config.main_server)
-        build_type_id = config_parser.get(build_config.main, build_config.main_type_id)
-        build_status = _build_status(server, build_type_id)
+        build_status = _build_status()
         click.echo(build_status)
     except BuildConfigNotFoundException:
         click.echo('Build config missing. Create with "config --generate" command')
@@ -56,9 +53,7 @@ def config(generate):
 
 def _print_build_configuration():
     try:
-        config_parser = _get_build_config_parser()
-        server = config_parser.get(build_config.main, build_config.main_server)
-        build_type_id = config_parser.get(build_config.main, build_config.main_type_id)
+        server, build_type_id = _get_build_config()
         click.echo('Server = ' + server)
         click.echo('Build type id = ' + build_type_id)
     except BuildConfigNotFoundException:
@@ -89,26 +84,31 @@ def _get_config_parser(filename):
     return config_parser
 
 
-def _get_build_config_parser():
+def _get_build_config():
     try:
-        return _get_config_parser(build_config.config_file)
+        config_parser = _get_config_parser(build_config.config_file)
+        server = config_parser.get(build_config.main, build_config.main_server),
+        build_type_id = config_parser.get(build_config.main, build_config.main_type_id)
+        return server, build_type_id
     except ConfigNotFoundException:
         raise BuildConfigNotFoundException()
 
 
-def _get_auth_config_parser(server):
+def _get_credentials(server):
     host = server.split(':')[0]
     try:
-        return _get_config_parser(auth_config.config_file.format(host))
+        config_parser = _get_config_parser(auth_config.config_file.format(host))
+        username = config_parser.get(auth_config.auth, auth_config.auth_user)
+        password = config_parser.get(auth_config.auth, auth_config.auth_pass)
+        return username, password
     except ConfigNotFoundException:
         raise AuthNotFoundException(host)
 
 
-def _build_status(server, build_type_id):
-    auth_config_parser = _get_auth_config_parser(server)
+def _build_status():
+    server, build_type_id = _get_build_config()
+    username, password = _get_credentials(server)
     build_url = 'http://{0}/httpAuth/app/rest/builds/buildType:{1}/status'.format(server, build_type_id)
-    username = auth_config_parser.get(auth_config.auth, auth_config.auth_user)
-    password = auth_config_parser.get(auth_config.auth, auth_config.auth_pass)
     return 'SUCCESS'
 
 
