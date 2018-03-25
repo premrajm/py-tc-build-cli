@@ -2,6 +2,8 @@ import click
 import configparser
 import os
 
+from tc.error import *
+
 
 class BuildConfig:
     config_file = 'tc-build.ini'
@@ -15,26 +17,6 @@ class AuthConfig:
     auth = 'Auth'
     auth_user = 'user'
     auth_pass = 'password'
-
-
-class ConfigNotFoundException(Exception):
-    """Raise if configuration is missing"""
-    pass
-
-
-class BuildConfigNotFoundException(Exception):
-    """Raise if configuration is missing"""
-    pass
-
-
-class AuthNotFoundException(Exception):
-    """Raise if login configuration is missing"""
-    pass
-
-
-class AuthenticationException(Exception):
-    """Raise if login failed"""
-    pass
 
 
 build_config = BuildConfig()
