@@ -1,4 +1,3 @@
-import base64
 import click
 import os
 import configparser
@@ -11,13 +10,20 @@ class BuildConfig:
     main_tag = 'tag'
 
 
+class AuthConfig:
+    config_file = os.environ.get('HOME') + '/.tcbuild/{0}.auth'
+    auth = 'Auth'
+    auth_user = 'user'
+    auth_pass = 'password'
+
+
 class ConfigNotFoundException(Exception):
     """Raise if build configuration is missing"""
     pass
 
 
-authConfig = os.environ.get('HOME') + '/.tcbuild/{0}.auth'
 build_config = BuildConfig()
+auth_config = AuthConfig()
 
 
 @click.group()
@@ -37,8 +43,11 @@ def status():
 @click.option('--password', prompt='Password', help='team city password', hide_input=True)
 def login(server, username, password):
     """configure login credentials for tc server"""
-    auth = '{0}:{1}'.format(username, password)
-    utils.writeFile(authConfig.format(server), base64.b64encode(auth.encode()).decode('utf-8'))
+    config_parser = configparser.ConfigParser()
+    config_parser.add_section(auth_config.auth)
+    config_parser.set(auth_config.auth, auth_config.auth_user, username)
+    config_parser.set(auth_config.auth, auth_config.auth_pass, password)
+    _write_config(auth_config.config_file.format(server), config_parser)
 
 
 @main.command()
@@ -54,7 +63,6 @@ def config(generate):
             click.echo('No config exists. create with --generate flag')
 
 
-
 def _print_build_configuration():
     try:
         cfg_file = open(build_config.config_file,'r')
@@ -66,11 +74,15 @@ def _print_build_configuration():
 
 
 def _create_build_configuration():
-    cfg_file = open(build_config.config_file, 'w')
     config_parser = configparser.ConfigParser()
     config_parser.add_section(build_config.main)
     config_parser.set(build_config.main, build_config.main_server, click.prompt('Please enter server host:port', type=click.STRING))
     config_parser.set(build_config.main, build_config.main_tag, click.prompt('Please enter build tag', type=click.STRING))
+    _write_config(build_config.config_file, config_parser)
+
+def _write_config(filename, config_parser):
+    cfg_file = utils.create_and_open(filename, 'w')
     config_parser.write(cfg_file)
     cfg_file.close()
+
 
