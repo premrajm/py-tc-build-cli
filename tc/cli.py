@@ -57,8 +57,10 @@ def status():
         click.echo(build_status)
     except BuildConfigNotFoundException:
         click.echo('Build config missing. Create with "config --generate" command')
-    except AuthNotFoundException:
-        click.echo('Login config missing. Create with "login" command')
+    except AuthNotFoundException as e:
+        server = str(e)
+        click.echo(
+            'Login config missing for server "{0}". Create with "login --server {1}" command'.format(server, server))
 
 
 @main.command()
@@ -129,10 +131,11 @@ def _get_build_config_parser():
 
 
 def _get_auth_config_parser(server):
+    host = server.split(':')[0]
     try:
-        return _get_config_parser(auth_config.config_file.format(server.split(':')[0]))
+        return _get_config_parser(auth_config.config_file.format(host))
     except ConfigNotFoundException:
-        raise AuthNotFoundException()
+        raise AuthNotFoundException(host)
 
 
 def _build_status(server, build_type_id):
