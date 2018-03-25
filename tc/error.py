@@ -1,4 +1,3 @@
-
 class ConfigNotFoundException(Exception):
     """Raise if configuration is missing"""
     pass
