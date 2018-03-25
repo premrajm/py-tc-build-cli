@@ -3,7 +3,7 @@ import click
 import os
 import tc.utils as utils
 
-authConfig = os.environ.get('HOME') + "/.tcbuild/{0}.auth"
+authConfig = os.environ.get('HOME') + '/.tcbuild/{0}.auth'
 
 
 @click.group()
@@ -24,7 +24,5 @@ def login():
     username = click.prompt('Please enter username', type=click.STRING)
     password = click.prompt('Please enter password', type=click.STRING, hide_input=True)
     auth = '{0}:{1}'.format(username, password)
-    file = utils.createAndOpen(authConfig.format(server), 'w')
-    file.write(base64.b64encode(auth.encode()).decode('utf-8'))
-    file.close()
+    utils.writeFile(authConfig.format(server), base64.b64encode(auth.encode()).decode('utf-8'))
 
