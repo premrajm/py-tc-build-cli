@@ -10,6 +10,12 @@ class BuildConfig:
     main_server = 'server'
     main_tag = 'tag'
 
+
+class ConfigNotFoundException(Exception):
+    """Raise if build configuration is missing"""
+    pass
+
+
 authConfig = os.environ.get('HOME') + '/.tcbuild/{0}.auth'
 build_config = BuildConfig()
 
@@ -42,7 +48,11 @@ def config(generate):
     if generate:
         _create_build_configuration()
     else:
-        _print_build_configuration()
+        try:
+            _print_build_configuration()
+        except ConfigNotFoundException:
+            click.echo('No config exists. create with --generate flag')
+
 
 
 def _print_build_configuration():
@@ -52,7 +62,8 @@ def _print_build_configuration():
         click.echo(message)
         cfg_file.close()
     except IOError:
-        click.echo('No config exists. create with --generate flag')
+        raise ConfigNotFoundException()
+
 
 def _create_build_configuration():
     cfg_file = open(build_config.config_file, 'w')
