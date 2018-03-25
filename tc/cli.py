@@ -23,9 +23,7 @@ def status():
     except BuildConfigNotFoundException:
         click.echo('Build config missing. Create with "config --generate" command')
     except AuthNotFoundException as e:
-        server = str(e)
-        click.echo(
-            'Login config missing for server "{0}". Create with "login --server {1}" command'.format(server, server))
+        click.echo('Login config missing. Create with "login --server {0}" command'.format(str(e)))
 
 
 @main.command()
