@@ -51,20 +51,18 @@ def config(generate):
     if generate:
         _create_build_configuration()
     else:
-        try:
-            _print_build_configuration()
-        except ConfigNotFoundException:
-            click.echo('No config exists. Create with --generate flag')
+        _print_build_configuration()
 
 
 def _print_build_configuration():
     try:
-        cfg_file = open(build_config.config_file, 'r')
-        message = cfg_file.read()
-        click.echo(message)
-        cfg_file.close()
-    except IOError:
-        raise ConfigNotFoundException()
+        config_parser = _get_build_config_parser()
+        server = config_parser.get(build_config.main, build_config.main_server)
+        build_type_id = config_parser.get(build_config.main, build_config.main_type_id)
+        click.echo('Server = ' + server)
+        click.echo('Build type id = ' + build_type_id)
+    except BuildConfigNotFoundException:
+        click.echo('No config exists. Create with --generate flag')
 
 
 def _create_build_configuration():
