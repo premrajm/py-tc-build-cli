@@ -1,6 +1,7 @@
 import click
-import os
 import configparser
+import os
+
 
 class BuildConfig:
     config_file = 'tc-build.ini'
@@ -29,6 +30,7 @@ class BuildConfigNotFoundException(Exception):
 class AuthNotFoundException(Exception):
     """Raise if login configuration is missing"""
     pass
+
 
 class AuthenticationException(Exception):
     """Raise if login failed"""
@@ -87,7 +89,7 @@ def config(generate):
 
 def _print_build_configuration():
     try:
-        cfg_file = open(build_config.config_file,'r')
+        cfg_file = open(build_config.config_file, 'r')
         message = cfg_file.read()
         click.echo(message)
         cfg_file.close()
@@ -98,8 +100,10 @@ def _print_build_configuration():
 def _create_build_configuration():
     config_parser = configparser.ConfigParser()
     config_parser.add_section(build_config.main)
-    config_parser.set(build_config.main, build_config.main_server, click.prompt('Please enter server host:port', type=click.STRING))
-    config_parser.set(build_config.main, build_config.main_type_id, click.prompt('Please enter build tag', type=click.STRING))
+    config_parser.set(build_config.main, build_config.main_server,
+                      click.prompt('Please enter server host:port', type=click.STRING))
+    config_parser.set(build_config.main, build_config.main_type_id,
+                      click.prompt('Please enter build tag', type=click.STRING))
     _write_config(build_config.config_file, config_parser)
 
 
