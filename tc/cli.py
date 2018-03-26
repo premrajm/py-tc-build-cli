@@ -85,7 +85,7 @@ def _get_config_parser(filename):
 def _get_build_config():
     try:
         config_parser = _get_config_parser(build_config.config_file)
-        server = config_parser.get(build_config.main, build_config.main_server),
+        server = config_parser.get(build_config.main, build_config.main_server)
         build_type_id = config_parser.get(build_config.main, build_config.main_type_id)
         return server, build_type_id
     except ConfigNotFoundException:
