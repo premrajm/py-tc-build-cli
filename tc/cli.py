@@ -62,9 +62,9 @@ def _create_build_configuration():
     config_parser = configparser.ConfigParser()
     config_parser.add_section(build_config.main)
     config_parser.set(build_config.main, build_config.main_server,
-                      click.prompt('Please enter server host:port', type=click.STRING))
+                      click.prompt('Please enter server host:port'))
     config_parser.set(build_config.main, build_config.main_type_id,
-                      click.prompt('Please enter build type id', type=click.STRING))
+                      click.prompt('Please enter build type id'))
     _write_config(build_config.config_file, config_parser)
 
 
