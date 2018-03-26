@@ -1,6 +1,6 @@
-import click
 import configparser
-import os
+
+import click
 
 from tc.configtypes import *
 from tc.error import *
