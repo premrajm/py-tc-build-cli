@@ -1,5 +1,6 @@
 import os
 
+
 class BuildConfig:
     config_file = 'tc-build.ini'
     main = 'Main'
