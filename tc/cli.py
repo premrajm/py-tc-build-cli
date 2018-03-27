@@ -1,6 +1,7 @@
 import configparser
 
 import click
+import requests
 
 from tc.configtypes import *
 from tc.error import *
@@ -24,6 +25,8 @@ def status():
         click.echo('Build config missing. Create with "config --generate" command')
     except AuthNotFoundException as e:
         click.echo('Login config missing. Create with "login --server {0}" command'.format(str(e)))
+    except RequestFailedException as e:
+        click.echo('Request to team city server failed, returned error is - {0}'.format(str(e)))
 
 
 @main.command()
@@ -105,7 +108,10 @@ def _build_status():
     server, build_type_id = _get_build_config()
     username, password = _get_credentials(server)
     build_url = 'http://{0}/httpAuth/app/rest/builds/buildType:{1}/status'.format(server, build_type_id)
-    return 'SUCCESS'
+    req = requests.get(build_url, auth=(username, password))
+    if req.status_code is not 200:
+        raise RequestFailedException(req.status_code)
+    return req.text
 
 
 def create_and_open(filename, mode):

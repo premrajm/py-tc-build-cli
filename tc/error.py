@@ -13,6 +13,6 @@ class AuthNotFoundException(Exception):
     pass
 
 
-class AuthenticationException(Exception):
-    """Raise if login failed"""
+class RequestFailedException(Exception):
+    """Raise if request status is other than 200"""
     pass

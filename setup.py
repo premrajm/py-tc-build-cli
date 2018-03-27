@@ -3,7 +3,7 @@ Get the build related info from team city server
 """
 from setuptools import find_packages, setup
 
-dependencies = ['click']
+dependencies = ['click', 'requests']
 
 setup(
     name='tc',
