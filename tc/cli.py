@@ -22,7 +22,7 @@ def status():
         build_status = _build_status()
         click.echo(build_status)
     except BuildConfigNotFoundException:
-        click.echo('Build config missing. Create with "config --generate" command')
+        click.echo('Build config missing. Create with "config --init" command')
     except AuthNotFoundException as e:
         click.echo('Login config missing. Create with "login --server {0}" command'.format(str(e)))
     except RequestFailedException as e:
@@ -43,10 +43,10 @@ def login(server, username, password):
 
 
 @main.command()
-@click.option('--generate', is_flag=True, help='create/overwrite config file')
-def config(generate):
+@click.option('--init', is_flag=True, help='create/overwrite config file')
+def config(init):
     """configure or print build configuration"""
-    if generate:
+    if init:
         _create_build_configuration()
     else:
         _print_build_configuration()
@@ -58,7 +58,7 @@ def _print_build_configuration():
         click.echo('Server = ' + server)
         click.echo('Build type id = ' + build_type_id)
     except BuildConfigNotFoundException:
-        click.echo('No config exists. Create with --generate flag')
+        click.echo('No config exists. Create with --init flag')
 
 
 def _create_build_configuration():
